@@ -7,7 +7,7 @@ class Openmemory < Formula
 
   head "https://github.com/mem0ai/mem0.git", branch: "main"
 
-  depends_on "qdrant"
+  depends_on "gdziegielewski/openmemory/qdrant"
   depends_on "gdziegielewski/openmemory/openmemory-mcp"
   depends_on "gdziegielewski/openmemory/openmemory-ui"
 
