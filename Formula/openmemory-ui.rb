@@ -1,8 +1,8 @@
 class OpenmemoryUi < Formula
   desc "OpenMemory UI — Next.js 15 frontend for the OpenMemory MCP server"
   homepage "https://github.com/mem0ai/mem0"
-  url "https://github.com/mem0ai/mem0/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "cc98461585e84899e707aa29e12b26c7413bcb8c288426c8e67c3f456d7b7f0c"
+  url "https://github.com/mem0ai/mem0/archive/refs/tags/v1.0.10.tar.gz"
+  sha256 "a97a7dde9e3a410b42ae5b17e3afffa6394a0d7f9d3a48a69b08298486ddf171"
   license "Apache-2.0"
 
   head "https://github.com/mem0ai/mem0.git", branch: "main"
