@@ -2,7 +2,7 @@ class Openmemory < Formula
   desc "Self-hosted memory layer for AI — Qdrant + FastAPI backend + Next.js UI"
   homepage "https://github.com/mem0ai/mem0"
   url "https://github.com/mem0ai/mem0/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "PLACEHOLDER"
+  sha256 "cc98461585e84899e707aa29e12b26c7413bcb8c288426c8e67c3f456d7b7f0c"
   license "Apache-2.0"
 
   head "https://github.com/mem0ai/mem0.git", branch: "main"
