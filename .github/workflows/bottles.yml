@@ -1,0 +1,100 @@
+name: Build Bottles
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write   # needed to upload release assets
+
+jobs:
+  build-bottle:
+    name: Build bottle (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-14       # Apple Silicon / arm64
+            bottle_tag: arm64_sonoma
+          - os: macos-13       # Intel / x86_64
+            bottle_tag: ventura
+
+    steps:
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Tap this repository
+        run: brew tap gdziegielewski/openmemory https://github.com/gdziegielewski/homebrew-openmemory
+
+      - name: Install openmemory-mcp (build bottle)
+        run: |
+          brew install --build-bottle gdziegielewski/openmemory/openmemory-mcp
+
+      - name: Install openmemory-ui (build bottle)
+        run: |
+          brew install --build-bottle gdziegielewski/openmemory/openmemory-ui
+
+      - name: Bottle openmemory-mcp
+        run: |
+          brew bottle \
+            --json \
+            --root-url "https://github.com/gdziegielewski/homebrew-openmemory/releases/download/${{ github.ref_name }}" \
+            gdziegielewski/openmemory/openmemory-mcp
+
+      - name: Bottle openmemory-ui
+        run: |
+          brew bottle \
+            --json \
+            --root-url "https://github.com/gdziegielewski/homebrew-openmemory/releases/download/${{ github.ref_name }}" \
+            gdziegielewski/openmemory/openmemory-ui
+
+      - name: Collect bottle artifacts
+        id: collect
+        run: |
+          # Bottles and JSON manifests land in the current directory
+          echo "files=$(ls *.tar.gz *.json 2>/dev/null | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
+
+      - name: Upload bottles to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: "*.tar.gz\n*.json"
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # After both platform bottles are built and uploaded, update the formulae
+  # with the correct bottle SHA256 hashes.
+  update-bottle-hashes:
+    name: Update formula bottle hashes
+    needs: build-bottle
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Checkout tap
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download bottle JSON manifests
+        uses: robinraju/release-downloader@v1
+        with:
+          tag: ${{ github.ref_name }}
+          fileName: "*.json"
+          out-file-path: bottle-json
+
+      - name: Merge bottle JSON into formulae
+        run: |
+          for json_file in bottle-json/*.json; do
+            brew bottle --merge --write --no-commit "${json_file}"
+          done
+
+      - name: Commit updated formulae
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update bottle hashes for ${{ github.ref_name }}"
+          file_pattern: "Formula/*.rb"
