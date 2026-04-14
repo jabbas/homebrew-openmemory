@@ -8,8 +8,8 @@ This file provides guidance for AI coding agents (Claude Code, GitHub Copilot, C
 
 This is a **Homebrew tap** that packages [OpenMemory](https://github.com/mem0ai/mem0) (a self-hosted AI memory layer) for macOS. The repository contains four Ruby formula files and a CI workflow — nothing else. There is no application code here; the formulas fetch, build, and configure the upstream source.
 
-**Tap name:** `gdziegielewski/openmemory`  
-**Install command:** `brew tap gdziegielewski/openmemory && brew install openmemory`  
+**Tap name:** `jabbas/openmemory`  
+**Install command:** `brew tap jabbas/openmemory && brew install openmemory`  
 **Upstream source:** <https://github.com/mem0ai/mem0> (Apache-2.0)
 
 ---
@@ -56,12 +56,12 @@ config/
 All formulas must pass:
 
 ```bash
-brew audit --strict gdziegielewski/openmemory/<formula-name>
+brew audit --strict jabbas/openmemory/<formula-name>
 # e.g.
-brew audit --strict gdziegielewski/openmemory/openmemory
-brew audit --strict gdziegielewski/openmemory/openmemory-mcp
-brew audit --strict gdziegielewski/openmemory/openmemory-ui
-brew audit --strict gdziegielewski/openmemory/qdrant
+brew audit --strict jabbas/openmemory/openmemory
+brew audit --strict jabbas/openmemory/openmemory-mcp
+brew audit --strict jabbas/openmemory/openmemory-ui
+brew audit --strict jabbas/openmemory/qdrant
 ```
 
 Known audit rules to observe (active issues in this tap as of v1.0.10):
@@ -124,28 +124,28 @@ end
 
 ### Audit (lint)
 ```bash
-brew audit --strict gdziegielewski/openmemory/openmemory
-brew audit --strict gdziegielewski/openmemory/openmemory-mcp
-brew audit --strict gdziegielewski/openmemory/openmemory-ui
-brew audit --strict gdziegielewski/openmemory/qdrant
+brew audit --strict jabbas/openmemory/openmemory
+brew audit --strict jabbas/openmemory/openmemory-mcp
+brew audit --strict jabbas/openmemory/openmemory-ui
+brew audit --strict jabbas/openmemory/qdrant
 ```
 
 ### Install from source
 ```bash
-brew install --build-from-source gdziegielewski/openmemory/openmemory
+brew install --build-from-source jabbas/openmemory/openmemory
 ```
 
 ### Run formula tests
 ```bash
-brew test gdziegielewski/openmemory/openmemory
-brew test gdziegielewski/openmemory/openmemory-mcp
-brew test gdziegielewski/openmemory/openmemory-ui
-brew test gdziegielewski/openmemory/qdrant
+brew test jabbas/openmemory/openmemory
+brew test jabbas/openmemory/openmemory-mcp
+brew test jabbas/openmemory/openmemory-ui
+brew test jabbas/openmemory/qdrant
 ```
 
 ### Quick style check
 ```bash
-brew style gdziegielewski/openmemory
+brew style jabbas/openmemory
 ```
 
 ---

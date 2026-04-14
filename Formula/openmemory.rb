@@ -7,9 +7,9 @@ class Openmemory < Formula
 
   head 'https://github.com/mem0ai/mem0.git', branch: 'main'
 
-  depends_on 'gdziegielewski/openmemory/openmemory-mcp'
-  depends_on 'gdziegielewski/openmemory/openmemory-ui'
-  depends_on 'gdziegielewski/openmemory/qdrant'
+  depends_on 'jabbas/openmemory/openmemory-mcp'
+  depends_on 'jabbas/openmemory/openmemory-ui'
+  depends_on 'jabbas/openmemory/qdrant'
 
   def install
     # Install example config

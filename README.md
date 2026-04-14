@@ -25,7 +25,7 @@ OpenMemory gives your AI tools persistent, searchable memory backed by a vector 
 
 ```bash
 # 1. Add the tap
-brew tap gdziegielewski/openmemory
+brew tap jabbas/openmemory
 
 # 2. Install the full stack
 brew install openmemory
@@ -140,13 +140,13 @@ For advanced users who only need specific components:
 
 ```bash
 # Vector database only
-brew install gdziegielewski/openmemory/qdrant
+brew install jabbas/openmemory/qdrant
 
 # MCP backend only (requires qdrant)
-brew install gdziegielewski/openmemory/openmemory-mcp
+brew install jabbas/openmemory/openmemory-mcp
 
 # UI only (requires openmemory-mcp running somewhere)
-brew install gdziegielewski/openmemory/openmemory-ui
+brew install jabbas/openmemory/openmemory-ui
 ```
 
 Start individual services:

@@ -9,7 +9,7 @@ class OpenmemoryMcp < Formula
 
   head 'https://github.com/mem0ai/mem0.git', branch: 'main'
 
-  depends_on 'gdziegielewski/openmemory/qdrant'
+  depends_on 'jabbas/openmemory/qdrant'
   depends_on 'python@3.12'
 
   def install
