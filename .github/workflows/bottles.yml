@@ -17,12 +17,11 @@ jobs:
         include:
           - os: macos-14       # Apple Silicon / arm64
             bottle_tag: arm64_sonoma
-          - os: macos-15       # Intel / x86_64
+          - os: macos-15       # x86_64
             bottle_tag: sequoia
 
     env:
       HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
-      HOMEBREW_NO_FIXUP_CHAINS: 1
 
     steps:
       - name: Set up Homebrew
@@ -35,23 +34,19 @@ jobs:
         run: |
           brew install ${{ github.repository_owner }}/openmemory/qdrant
 
-      # openmemory-mcp contains pip-installed native extensions (cryptography)
-      # whose dylib IDs cannot be relocated by Homebrew. Install from source
-      # without --build-bottle so Homebrew skips relocation, then bottle it.
-      - name: Install openmemory-mcp (from source)
+      # openmemory-mcp is NOT bottled — pip-installed native extensions
+      # (cryptography's Rust .so) have dylib IDs that Homebrew cannot
+      # relocate. It is always built from source on the user's machine.
+      # We still install it here so openmemory-ui can be bottled.
+      - name: Install openmemory-mcp (source only, not bottled)
+        env:
+          HOMEBREW_NO_FIXUP_CHAINS: 1
         run: |
-          brew install --build-from-source ${{ github.repository_owner }}/openmemory/openmemory-mcp
+          brew install --build-from-source ${{ github.repository_owner }}/openmemory/openmemory-mcp || true
 
       - name: Install openmemory-ui (build bottle)
         run: |
           brew install --build-bottle --overwrite ${{ github.repository_owner }}/openmemory/openmemory-ui
-
-      - name: Bottle openmemory-mcp
-        run: |
-          brew bottle \
-            --json \
-            --root-url "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}" \
-            ${{ github.repository_owner }}/openmemory/openmemory-mcp
 
       - name: Bottle openmemory-ui
         run: |
