@@ -17,37 +17,37 @@ jobs:
         include:
           - os: macos-14       # Apple Silicon / arm64
             bottle_tag: arm64_sonoma
-          - os: macos-13       # Intel / x86_64
-            bottle_tag: ventura
+          - os: macos-15       # Intel / x86_64
+            bottle_tag: sequoia
 
     steps:
       - name: Set up Homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+        uses: Homebrew/actions/setup-homebrew@main
 
       - name: Tap this repository
-        run: brew tap gdziegielewski/openmemory https://github.com/gdziegielewski/homebrew-openmemory
+        run: brew tap ${{ github.repository_owner }}/openmemory https://github.com/${{ github.repository }}
 
       - name: Install openmemory-mcp (build bottle)
         run: |
-          brew install --build-bottle gdziegielewski/openmemory/openmemory-mcp
+          brew install --build-bottle ${{ github.repository_owner }}/openmemory/openmemory-mcp
 
       - name: Install openmemory-ui (build bottle)
         run: |
-          brew install --build-bottle gdziegielewski/openmemory/openmemory-ui
+          brew install --build-bottle ${{ github.repository_owner }}/openmemory/openmemory-ui
 
       - name: Bottle openmemory-mcp
         run: |
           brew bottle \
             --json \
-            --root-url "https://github.com/gdziegielewski/homebrew-openmemory/releases/download/${{ github.ref_name }}" \
-            gdziegielewski/openmemory/openmemory-mcp
+            --root-url "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}" \
+            ${{ github.repository_owner }}/openmemory/openmemory-mcp
 
       - name: Bottle openmemory-ui
         run: |
           brew bottle \
             --json \
-            --root-url "https://github.com/gdziegielewski/homebrew-openmemory/releases/download/${{ github.ref_name }}" \
-            gdziegielewski/openmemory/openmemory-ui
+            --root-url "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}" \
+            ${{ github.repository_owner }}/openmemory/openmemory-ui
 
       - name: Collect bottle artifacts
         id: collect
@@ -75,7 +75,7 @@ jobs:
 
     steps:
       - name: Set up Homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+        uses: Homebrew/actions/setup-homebrew@main
 
       - name: Checkout tap
         uses: actions/checkout@v4
