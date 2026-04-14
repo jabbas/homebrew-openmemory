@@ -24,6 +24,9 @@ jobs:
       # Suppress warnings when runner already has newer versions of
       # dependencies (e.g. openssl) linked into the prefix.
       HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+      # Prevent Homebrew from trying to fix dylib IDs/rpaths inside
+      # pip-installed native extensions (e.g. cryptography's Rust .so).
+      HOMEBREW_NO_FIXUP_CHAINS: 1
 
     steps:
       - name: Set up Homebrew
