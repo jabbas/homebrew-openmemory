@@ -1,23 +1,23 @@
 class Openmemory < Formula
-  desc "Self-hosted memory layer for AI — Qdrant + FastAPI backend + Next.js UI"
-  homepage "https://github.com/mem0ai/mem0"
-  url "https://github.com/mem0ai/mem0/archive/refs/tags/v1.0.10.tar.gz"
-  sha256 "a97a7dde9e3a410b42ae5b17e3afffa6394a0d7f9d3a48a69b08298486ddf171"
-  license "Apache-2.0"
+  desc 'Self-hosted memory layer for AI — Qdrant + FastAPI backend + Next.js UI'
+  homepage 'https://github.com/mem0ai/mem0'
+  url 'https://github.com/mem0ai/mem0/archive/refs/tags/v1.0.10.tar.gz'
+  sha256 'a97a7dde9e3a410b42ae5b17e3afffa6394a0d7f9d3a48a69b08298486ddf171'
+  license 'Apache-2.0'
 
-  head "https://github.com/mem0ai/mem0.git", branch: "main"
+  head 'https://github.com/mem0ai/mem0.git', branch: 'main'
 
-  depends_on "gdziegielewski/openmemory/qdrant"
-  depends_on "gdziegielewski/openmemory/openmemory-mcp"
-  depends_on "gdziegielewski/openmemory/openmemory-ui"
+  depends_on 'gdziegielewski/openmemory/openmemory-mcp'
+  depends_on 'gdziegielewski/openmemory/openmemory-ui'
+  depends_on 'gdziegielewski/openmemory/qdrant'
 
   def install
     # Install example config
-    (etc/"openmemory").mkpath
-    etc.install "config/openmemory.env.example" => "openmemory/openmemory.env.example"
+    (etc / 'openmemory').mkpath
+    etc.install 'config/openmemory.env.example' => 'openmemory/openmemory.env.example'
 
     # Write the openmemory wrapper script
-    (bin/"openmemory").write <<~EOS
+    (bin / 'openmemory').write <<~EOS
       #!/bin/bash
       set -euo pipefail
 
@@ -109,24 +109,24 @@ class Openmemory < Formula
       esac
     EOS
 
-    chmod 0755, bin/"openmemory"
+    chmod 0o755, bin / 'openmemory'
   end
 
   def post_install
-    (var/"openmemory").mkpath
-    (var/"log/openmemory").mkpath
+    (var / 'openmemory').mkpath
+    (var / 'log/openmemory').mkpath
 
-    env_file    = etc/"openmemory/openmemory.env"
-    env_example = etc/"openmemory/openmemory.env.example"
+    env_file    = etc / 'openmemory/openmemory.env'
+    env_example = etc / 'openmemory/openmemory.env.example'
 
-    unless env_file.exist?
-      FileUtils.cp env_example, env_file
-      env_file.chmod 0600
-    end
+    return if env_file.exist?
+
+    cp env_example, env_file
+    env_file.chmod 0o600
   end
 
   def caveats
-    s = <<~EOS
+    <<~EOS
       OpenMemory has been installed.
 
       1. Configure your API key:
@@ -150,12 +150,11 @@ class Openmemory < Formula
       To check status:
            openmemory status
     EOS
-    s
   end
 
   test do
-    assert_predicate bin/"openmemory", :executable?
+    assert_predicate bin / 'openmemory', :executable?
     output = shell_output("#{bin}/openmemory bad-cmd 2>&1 || true")
-    assert_match "Usage: openmemory", output
+    assert_match 'Usage: openmemory', output
   end
 end

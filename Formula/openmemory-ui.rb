@@ -1,38 +1,38 @@
 class OpenmemoryUi < Formula
-  desc "OpenMemory UI — Next.js 15 frontend for the OpenMemory MCP server"
-  homepage "https://github.com/mem0ai/mem0"
-  url "https://github.com/mem0ai/mem0/archive/refs/tags/v1.0.10.tar.gz"
-  sha256 "a97a7dde9e3a410b42ae5b17e3afffa6394a0d7f9d3a48a69b08298486ddf171"
-  license "Apache-2.0"
+  desc 'Next.js 15 frontend dashboard for the OpenMemory MCP server'
+  homepage 'https://github.com/mem0ai/mem0'
+  url 'https://github.com/mem0ai/mem0/archive/refs/tags/v1.0.10.tar.gz'
+  sha256 'a97a7dde9e3a410b42ae5b17e3afffa6394a0d7f9d3a48a69b08298486ddf171'
+  license 'Apache-2.0'
 
-  head "https://github.com/mem0ai/mem0.git", branch: "main"
+  head 'https://github.com/mem0ai/mem0.git', branch: 'main'
 
-  depends_on "node"
-  depends_on "pnpm" => :build
+  depends_on 'pnpm' => :build
+  depends_on 'node'
 
   def install
-    libexec_ui = libexec/"ui"
+    libexec_ui = libexec / 'ui'
     libexec_ui.mkpath
 
     # Copy the UI source tree (including dotfiles such as .env.example)
-    (buildpath/"openmemory/ui").each_child do |f|
+    (buildpath / 'openmemory/ui').each_child do |f|
       cp_r f, libexec_ui
     end
 
     # Build the Next.js app
     Dir.chdir(libexec_ui) do
-      system "pnpm", "install", "--frozen-lockfile"
+      system 'pnpm', 'install', '--frozen-lockfile'
 
       # NEXT_PUBLIC_API_URL is baked at build time.
       # NEXT_PUBLIC_USER_ID is intentionally NOT set here — it is fetched
       # from /api/v1/me at runtime so each user sees their own identity.
-      ENV["NEXT_PUBLIC_API_URL"] = "http://localhost:8765"
+      ENV['NEXT_PUBLIC_API_URL'] = 'http://localhost:8765'
 
-      system "pnpm", "build"
+      system 'pnpm', 'build'
     end
 
     # Write the server wrapper
-    (bin/"openmemory-ui-server").write <<~EOS
+    (bin / 'openmemory-ui-server').write <<~EOS
       #!/bin/bash
       set -euo pipefail
 
@@ -55,15 +55,15 @@ class OpenmemoryUi < Formula
         -H "${HOST}"
     EOS
 
-    chmod 0755, bin/"openmemory-ui-server"
+    chmod 0o755, bin / 'openmemory-ui-server'
   end
 
   service do
-    run [opt_bin/"openmemory-ui-server"]
+    run [opt_bin / 'openmemory-ui-server']
     keep_alive true
-    working_dir var/"openmemory"
-    log_path var/"log/openmemory/ui.log"
-    error_log_path var/"log/openmemory/ui.error.log"
+    working_dir var / 'openmemory'
+    log_path var / 'log/openmemory/ui.log'
+    error_log_path var / 'log/openmemory/ui.error.log'
     environment_variables PATH: std_service_path_env
   end
 
@@ -87,12 +87,12 @@ class OpenmemoryUi < Formula
 
   test do
     # Wrapper must be executable
-    assert_predicate bin/"openmemory-ui-server", :executable?
+    assert_predicate bin / 'openmemory-ui-server', :executable?
 
     # Build output directory must exist
-    assert_predicate libexec/"ui/.next", :directory?
+    assert_predicate libexec / 'ui/.next', :directory?
 
     # Next.js CLI must be available
-    assert_predicate libexec/"ui/node_modules/.bin/next", :executable?
+    assert_predicate libexec / 'ui/node_modules/.bin/next', :executable?
   end
 end
