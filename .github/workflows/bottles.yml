@@ -27,6 +27,10 @@ jobs:
       - name: Tap this repository
         run: brew tap ${{ github.repository_owner }}/openmemory https://github.com/${{ github.repository }}
 
+      - name: Install qdrant dependency
+        run: |
+          brew install ${{ github.repository_owner }}/openmemory/qdrant
+
       - name: Install openmemory-mcp (build bottle)
         run: |
           brew install --build-bottle ${{ github.repository_owner }}/openmemory/openmemory-mcp
