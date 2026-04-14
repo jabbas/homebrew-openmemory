@@ -21,11 +21,7 @@ jobs:
             bottle_tag: sequoia
 
     env:
-      # Suppress warnings when runner already has newer versions of
-      # dependencies (e.g. openssl) linked into the prefix.
       HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
-      # Prevent Homebrew from trying to fix dylib IDs/rpaths inside
-      # pip-installed native extensions (e.g. cryptography's Rust .so).
       HOMEBREW_NO_FIXUP_CHAINS: 1
 
     steps:
@@ -39,9 +35,12 @@ jobs:
         run: |
           brew install ${{ github.repository_owner }}/openmemory/qdrant
 
-      - name: Install openmemory-mcp (build bottle)
+      # openmemory-mcp contains pip-installed native extensions (cryptography)
+      # whose dylib IDs cannot be relocated by Homebrew. Install from source
+      # without --build-bottle so Homebrew skips relocation, then bottle it.
+      - name: Install openmemory-mcp (from source)
         run: |
-          brew install --build-bottle --overwrite ${{ github.repository_owner }}/openmemory/openmemory-mcp
+          brew install --build-from-source ${{ github.repository_owner }}/openmemory/openmemory-mcp
 
       - name: Install openmemory-ui (build bottle)
         run: |
