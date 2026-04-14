@@ -20,6 +20,11 @@ jobs:
           - os: macos-15       # Intel / x86_64
             bottle_tag: sequoia
 
+    env:
+      # Suppress warnings when runner already has newer versions of
+      # dependencies (e.g. openssl) linked into the prefix.
+      HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+
     steps:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@main
@@ -33,11 +38,11 @@ jobs:
 
       - name: Install openmemory-mcp (build bottle)
         run: |
-          brew install --build-bottle ${{ github.repository_owner }}/openmemory/openmemory-mcp
+          brew install --build-bottle --overwrite ${{ github.repository_owner }}/openmemory/openmemory-mcp
 
       - name: Install openmemory-ui (build bottle)
         run: |
-          brew install --build-bottle ${{ github.repository_owner }}/openmemory/openmemory-ui
+          brew install --build-bottle --overwrite ${{ github.repository_owner }}/openmemory/openmemory-ui
 
       - name: Bottle openmemory-mcp
         run: |
@@ -52,12 +57,6 @@ jobs:
             --json \
             --root-url "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}" \
             ${{ github.repository_owner }}/openmemory/openmemory-ui
-
-      - name: Collect bottle artifacts
-        id: collect
-        run: |
-          # Bottles and JSON manifests land in the current directory
-          echo "files=$(ls *.tar.gz *.json 2>/dev/null | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
 
       - name: Upload bottles to GitHub Release
         uses: softprops/action-gh-release@v2
