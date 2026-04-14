@@ -10,6 +10,10 @@ class OpenmemoryMcp < Formula
   depends_on "jabbas/openmemory/qdrant"
   depends_on "python@3.12"
 
+  # Prevent Homebrew from relocating dylibs inside pip-installed packages
+  # (e.g. cryptography's Rust-built .so uses @rpath which cannot be relocated).
+  skip_clean "libexec"
+
   def install
     # Copy the API source tree into libexec
     libexec_app = libexec/"app"
